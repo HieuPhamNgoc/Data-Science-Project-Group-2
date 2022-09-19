@@ -1,0 +1,2 @@
+The data will be categorised into different regions. Data consists of CO2, CH4, N2O emission from 1970-2018. There are datasets with many factors and with the sum of emission 
+over all those features. Dataset with multiple features are chosen with IPCC code 2006.
