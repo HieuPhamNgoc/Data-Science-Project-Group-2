@@ -1,8 +1,8 @@
 import pandas as pd
 
-path_co2 = 'data/v60_GHG_CO2_excl_short-cycle_org_C_1970_2018/'
-path_n2o = 'data/v60_GHG_N2O_1970_2018/'
-path_ch4 = 'data/v60_GHG_CH4_1970_2018/'
+path_co2 = 'data_processing/data_edga_2018/v60_GHG_CO2_excl_short-cycle_org_C_1970_2018/'
+path_n2o = 'data_processing/data_edga_2018/v60_GHG_N2O_1970_2018/'
+path_ch4 = 'data_processing/data_edga_2018/v60_GHG_CH4_1970_2018/'
 
 def read_and_save_nordic(path, filename, sheet, emission, feature):
     df = pd.read_excel(path + filename, sheet_name=sheet)
