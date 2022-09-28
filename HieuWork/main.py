@@ -1,6 +1,7 @@
 from typing import Container
 import pandas as pd
 import plotly.express as px
+import numpy as np
 
 import dash
 from dash import dcc
@@ -9,13 +10,15 @@ from dash.dependencies import Input, Output
 
 app = dash.Dash(__name__)
 
-df = pd.read_excel(io='EDGARv7.0_FT2021_fossil_CO2_booklet_2022.xlsx', sheet_name='fossil_CO2_totals_by_country')
+path = 'HieuWork/EDGARv7.0_FT2021_fossil_CO2_booklet_2022.xlsx'
+
+df = pd.read_excel(io = path, sheet_name='fossil_CO2_totals_by_country')
 
 year = [{'label': str(c), 'value': c} for c  in df.columns[3:]]
-print(year)
+#print(year)
 
 app.layout = html.Div([
-    html.H1('Testing webpage', style = {'text-align':'left'}),
+    html.H1('Choropleth', style = {'text-align':'left'}),
 
     dcc.Dropdown(id = 'year',
                  options=year,
@@ -50,9 +53,12 @@ def update_graph(option_slctd): # number of arguments is the same as the number 
     fig = px.choropleth(
         data_frame=dff,
         locationmode='country names',
-        locations=dff['Country'],
-        color= option_slctd
-
+        locations= 'Country',
+        color= option_slctd,
+        range_color=[0, 12000],
+        color_continuous_scale=px.colors.sequential.Viridis,
+        projection='equirectangular',
+        title='Choropleth map of CO2 emissions world wide in {}'.format(option_slctd)
     )
     return container, fig
 
