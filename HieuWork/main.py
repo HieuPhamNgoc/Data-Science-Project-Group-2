@@ -8,6 +8,8 @@ from dash import dcc
 from dash import html
 from dash.dependencies import Input, Output
 
+# http://127.0.0.1:8050/ to go to the website
+
 app = dash.Dash(__name__)
 
 path = 'HieuWork/EDGARv7.0_FT2021_fossil_CO2_booklet_2022.xlsx'
