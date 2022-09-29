@@ -12,7 +12,8 @@ import dash_bootstrap_components as dbc
 import plotly.express as px
 import pandas as pd
 
-data = pd.read_excel(io= "data.xls", sheet_name= "fossil_CO2_totals_by_country").T
+path = 'TeemusWork/data.xls'
+data = pd.read_excel(io= path, sheet_name= "fossil_CO2_totals_by_country").T
 data.columns = data.iloc[0]
 data = data[1:]
 

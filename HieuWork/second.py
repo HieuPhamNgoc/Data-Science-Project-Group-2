@@ -8,6 +8,8 @@ from dash import dcc
 from dash import html
 from dash.dependencies import Input, Output
 
+# http://127.0.0.1:8050/ to go to the website
+
 app = dash.Dash(__name__)
 
 path = 'HieuWork/EDGARv7.0_FT2021_fossil_CO2_booklet_2022.xlsx'
@@ -21,20 +23,21 @@ app.layout = html.Div(
     children = [
         html.H1('Worldwide CO2 emission', style = {'text-align':'center'}),
 
-        html.Div(
-            children = [
-            html.H3('Please choose a year:'),
-            dcc.Dropdown(id = 'year',
-                        options=year,
-                        multi=False,
-                        value = year[-1]['value'],
-                        style={'width':'40%'})
-            ],
-            style={'width': '50%', 'margin-left': '50px'}
-        ),
+        # html.Div(
+        #     children = [
+        #     html.H3('Please choose a year:'),
+        #     dcc.Dropdown(id = 'year',
+        #                 options=year,
+        #                 multi=False,
+        #                 value = year[-1]['value'],
+        #                 style={'width':'40%'})
+        #     ],
+        #     style={'width': '50%', 'margin-left': '50px'}
+        # ),
         html.Br(),
         dcc.Graph(id = 'co2_graph', figure = {}, style = {'margin-left':'150px'}),
         html.Br(),
+        dcc.Slider(1970, 2021, 1, value = 2021, marks = None, id = 'year_slider'),
         html.Div(id = 'output_container', children = [], style={'text-align':'center', 'font-size':'25px'})
     ]
 )
@@ -43,7 +46,7 @@ app.layout = html.Div(
 @app.callback(
     [Output(component_id='output_container', component_property='children'),
     Output(component_id = 'co2_graph', component_property='figure')],
-    [Input(component_id='year', component_property='value')]
+    [Input(component_id='year_slider', component_property='value')]
 )
 
 def update_graph(option_slctd): # number of arguments is the same as the number of inputs
