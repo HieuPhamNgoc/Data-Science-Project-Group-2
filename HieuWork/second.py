@@ -37,7 +37,17 @@ app.layout = html.Div(
         html.Br(),
         dcc.Graph(id = 'co2_graph', figure = {}, style = {'margin-left':'150px'}),
         html.Br(),
-        dcc.Slider(1970, 2021, 1, value = 2021, marks = None, id = 'year_slider'),
+        html.Div(
+            children = 
+                [dcc.Slider(min = 1970, 
+                            max = 2021, 
+                            step = 1, 
+                            value = 2021, 
+                            marks=None,
+                            tooltip={"placement": "bottom", "always_visible": False}, 
+                            id = 'year_slider')],
+            style = {'width': '50%', 'margin-left':'480px'}
+        ),
         html.Div(id = 'output_container', children = [], style={'text-align':'center', 'font-size':'25px'})
     ]
 )
