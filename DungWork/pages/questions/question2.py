@@ -35,7 +35,7 @@ def update_log(b1,b2,b3):
             html.H1(" Far to the beach ", style={'margin-left':'30%', 'margin-right':'30%'}),
             html.H2("Most people overestimate the population at risk from rising sea levels. When you overestimate how many homes can be reached by rising sea levels, you may think it’s impossible for so many people to find new places to live.",
             style={'margin-left':'30%', 'margin-right':'30%'}),
-            dcc.Link(html.Button("To knowledge"), href="/", style={'margin-left':'44%', 'margin-right':'30%'}),
+            dcc.Link("To Knowledge", href="/", style={'margin-left':'44%', 'margin-right':'30%'}, className="stuff"),
          ])
     else:
          return html.Div([
@@ -43,5 +43,5 @@ def update_log(b1,b2,b3):
             html.H2("But 77% of people answer wrongly. Most people overestimate the population at risk from rising sea levels. When they overestimate how many homes can be reached by rising sea levels, they may think it’s impossible for so many people to find new places to live.",
             style={'margin-left':'30%', 'margin-right':'30%'}
             ),
-            dcc.Link(html.Button("To knowledge"), href="/", style={'margin-left':'44%', 'margin-right':'30%'}),
+            dcc.Link("To Knowledge", href="/", style={'margin-left':'44%', 'margin-right':'30%'}, className="stuff"),
             ])

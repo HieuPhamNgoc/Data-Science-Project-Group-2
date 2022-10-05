@@ -31,7 +31,7 @@ def update_log(b1,b2,b3):
     if triggered_id == 'first_button' or triggered_id == 'second_button':
          return html.Div([
             html.H1("Don’t look for global warming outside your window", style={'margin-left':'30%', 'margin-right':'30%'}),
-            dcc.Link(html.Button("To knowledge"), href="/", style={'margin-left':'44%', 'margin-right':'30%'}),
+            dcc.Link("To Knowledge", href="/", style={'margin-left':'44%', 'margin-right':'30%'}, className="stuff"),
          ])
     else:
          return html.Div([
@@ -39,5 +39,5 @@ def update_log(b1,b2,b3):
             html.H2("But 90%% of people answer wrongly. Most people are unaware that most global warming is hiding in the seas. As long as they think global warming is all about air temperature, they won’t realize the size of the problem.",
             style={'margin-left':'30%', 'margin-right':'30%'}
             ),
-            dcc.Link(html.Button("To knowledge"), href="/", style={'margin-left':'44%', 'margin-right':'30%'}),
+            dcc.Link("To Knowledge", href="/", style={'margin-left':'44%', 'margin-right':'30%'}, className="stuff"),
             ])

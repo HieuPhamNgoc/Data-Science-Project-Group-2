@@ -4,7 +4,6 @@ import dash
 app = Dash(__name__, use_pages=True)
 
 app.layout = html.Div([
-	html.H1('Multi-page app with Dash Pages'),
 
     html.Div(
         [
@@ -12,10 +11,11 @@ app.layout = html.Div([
                 dcc.Link(
                     f"{page['name']}", href=page["relative_path"]
                 )
+            , style={'margin':'6px'} 
             )
             for page in dash.page_registry.values()
         ]
-    ),
+    , style={ 'display':'flex','flex-direction': 'row'}),
 
 	dash.page_container
 ])
