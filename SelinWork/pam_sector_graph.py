@@ -8,9 +8,9 @@ import pandas as pd
 import numpy as np
 import pycountry
 
-# NOT COMPLETED 
+
 #Preprocessing
-data=pd.read_excel("PaM_number.xlsx")
+data=pd.read_excel("SelinWork/PaM_number.xlsx")
 data =data.rename(columns={"Objective(s)_lookup_only4facets":"Sector"})
 
 for i in range(len(data)):
@@ -178,7 +178,7 @@ app.layout = html.Div([
     html.H4('Number of Policies and measurements by Sector'),
     html.P("Select the Sector"),
     dcc.Dropdown(id = 'sector',
-                        options=["Total","Energy", "Waste", "Trasportation","Industry","Agriculture & Land","Other"],
+                        options=["Total","Energy", "Waste", "Transportation","Industry","Agriculture & Land","Other"],
                         multi=False,
                         value = 'Total',
                         style={'width':'60%'}),       
@@ -192,7 +192,7 @@ def display_choropleth(sector):
     df_use = df # replace with your own data source
     fig = px.choropleth(
         df_use, color=sector,locations="code",
-        projection="mercator", range_color=[0, 220],scope="europe", hover_name="Country",colorscale = 'Reds')
+        projection="mercator", range_color=[0, 220],scope="europe", hover_name="Country",color_continuous_scale="Viridis")
     fig.update_geos(fitbounds="locations", visible=False)
     fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
     return fig
