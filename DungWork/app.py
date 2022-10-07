@@ -3,22 +3,7 @@ import dash
 
 app = Dash(__name__, use_pages=True)
 
-app.layout = html.Div([
+app.layout = html.Div([dash.page_container])
 
-    html.Div(
-        [
-            html.Div(
-                dcc.Link(
-                    f"{page['name']}", href=page["relative_path"]
-                )
-            , style={'margin':'6px'} 
-            )
-            for page in dash.page_registry.values()
-        ]
-    , style={ 'display':'flex','flex-direction': 'row'}),
-
-	dash.page_container
-])
-
-if __name__ == '__main__':
-	app.run_server(debug=True)
+if __name__ == "__main__":
+    app.run_server(debug=True)
