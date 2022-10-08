@@ -6,11 +6,12 @@ import pycountry_convert as pc
 import dash
 from dash import dcc
 from dash import html
+import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output
 
 # http://127.0.0.1:8050/ to go to the website
 
-app = dash.Dash(__name__)
+app = dash.Dash(__name__, external_stylesheets=[dbc.themes.LUX])
 
 path = 'HieuWork/EDGARv7.0_FT2021_fossil_CO2_booklet_2022.xlsx'
 
@@ -38,7 +39,7 @@ year = [{'label': str(c), 'value': c} for c  in df_CO2_country.columns[3:]]
 
 app.layout = html.Div(
     children = [
-        html.H1('Worldwide CO2 emission', style = {'text-align':'center'}),
+        html.H1('CO2 emission', style = {'text-align':'center'}),
 
         html.Div(
             children = [
