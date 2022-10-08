@@ -1,39 +1,117 @@
 import dash
-from dash import html, dcc, Input, Output, callback
+from dash import html, dcc, Input, Output, callback, ctx
 
-dash.register_page(__name__, path='/')
+dash.register_page(__name__, path="/")
 
-layout = html.Div(children=[
-    html.H1(children='This is our Home page'),
-
-    html.Div(children='''
-        This is our Home page content.
-    '''),
-    html.Div([
-        "How many friends do you have: ",
-        dcc.Input(id='my-input', value='', type='number')
-    ]),
-    html.Div([
-        "What you can do:",
-        dcc.Checklist(
-    ['Walk/cycle to work','Use better energy home appliance', 'Cook more at home to reduce food waste'], 
-    [],
-    id='activities'
-    )
-    ]),
-    html.Br(),
-    html.Div(id='my-output'),
-])
-@callback(
-    Output(component_id='my-output', component_property='children'),
-    Input(component_id='my-input', component_property='value'),
-    Input('activities','value'),
-    prevent_initial_call=True
+layout = html.Div(
+    [
+        html.Div(
+            [
+                html.H1(
+                    "How much of the excess heat from global warming is captured in the oceans?",
+                    style={
+                        "margin-left": "30%",
+                        "margin-right": "30%",
+                        "font-size": "60px",
+                    },
+                ),
+                html.Div(
+                    [
+                        html.Button(
+                            "Around 10%",
+                            className="stuff",
+                            id="first_button",
+                            style={"margin": "6px"},
+                        ),
+                        html.Button(
+                            "Around 50%",
+                            className="stuff",
+                            id="second_button",
+                            style={"margin": "6px"},
+                        ),
+                        html.Button(
+                            "Around 90%",
+                            className="stuff",
+                            id="third_button",
+                            style={"margin": "6px"},
+                        ),
+                    ],
+                    style={
+                        "display": "flex",
+                        "flex-direction": "column",
+                        "margin-left": "30%",
+                        "margin-right": "30%",
+                        "font-size": "40px",
+                    },
+                ),
+            ],
+            id="hook_question",
+            style={"margin-top": "15%"},
+        ),
+    ]
 )
-def update_output_div(input_value, activities):
-    if len(activities) == 0 or input_value is None :
-        ans = 0
-        return ""
+
+
+@callback(
+    Output("hook_question", "children"),
+    Input("first_button", "n_clicks"),
+    Input("second_button", "n_clicks"),
+    Input("third_button", "n_clicks"),
+    prevent_initial_call=True,
+)
+def update_log(b1, b2, b3):
+    triggered_id = ctx.triggered_id
+    if triggered_id == "first_button" or triggered_id == "second_button":
+        return html.Div(
+            [
+                html.H1(
+                    "Don’t look for global warming outside your window",
+                    style={
+                        "margin-left": "30%",
+                        "margin-right": "30%",
+                        "font-size": "70px",
+                    },
+                ),
+                dcc.Link(
+                    "To Knowledge",
+                    href="/graphs",
+                    style={
+                        "margin-left": "44%",
+                        "margin-right": "30%",
+                        "font-size": "40px",
+                    },
+                    className="stuff",
+                ),
+            ]
+        )
     else:
-        ans = input_value * len(activities) 
-        return html.H1("You can reduce {} tons carbon emission by 2050".format(ans), style={'margin-left':'35%', 'margin-right':'30%', 'color':'red'})
+        return html.Div(
+            [
+                html.H1(
+                    "You are right",
+                    style={
+                        "margin-left": "30%",
+                        "margin-right": "30%",
+                        "font-size": "70px",
+                    },
+                ),
+                html.P(
+                    "But 90%% of people answer wrongly. Most people are unaware that most global warming is hiding in the seas. As long as they think global warming is all about air temperature, they won’t realize the size of the problem.",
+                    style={
+                        "margin-left": "30%",
+                        "margin-right": "30%",
+                        "font-size": "30px",
+                    },
+                ),
+                dcc.Link(
+                    "To Knowledge",
+                    href="/graphs",
+                    style={
+                        "margin-left": "44%",
+                        "margin-right": "30%",
+                        "font-size": "40px",
+                    },
+                    className="stuff",
+                ),
+            ]
+        )
