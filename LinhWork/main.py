@@ -1,12 +1,13 @@
 import pandas as pd
 import dash
+import openpyxl
 
 from dash import html, dcc, Dash
 from dash.dependencies import Input, Output
 import plotly.express as px
 
 # Preprocessing data
-df_co2 = pd.read_excel('co2_by_country.xlsx')
+df_co2 = pd.read_excel( io = "LinhWork/co2_by_country.xlsx")
 df_co2 = df_co2.drop(columns=['Substance', 'EDGAR Country Code'])
 df_co2 = df_co2.drop(columns= df_co2.columns[1:21])
 scope = list(df_co2["Country"].unique())
@@ -15,14 +16,14 @@ df = df_co2.copy()
 df = pd.melt(df, id_vars='Country', value_vars= df.columns[1:],  var_name='Year', value_name='Change in CO2 emissions')
 year = set(df.Year.unique())
 
-df_GDP = pd.read_excel('GDP_by_country_current_international_dollar.xlsx', skiprows = 3)
+df_GDP = pd.read_excel(io = 'LinhWork/GDP_by_country_current_international_dollar.xlsx', skiprows = 3)
 df_GDP = df_GDP.drop(columns= df_GDP.columns[1:34])
 
 
-df_CO2_capita = pd.read_excel('co2_by_capita.xlsx')
+df_CO2_capita = pd.read_excel(io = 'LinhWork/co2_by_capita.xlsx')
 df_CO2_capita = df_CO2_capita.drop(columns=['Substance', 'EDGAR Country Code'])
 
-df_GDP_capita = pd.read_excel('GDP_per_capita.xlsx', skiprows = 3)
+df_GDP_capita = pd.read_excel(io  = 'LinhWork/GDP_per_capita.xlsx', skiprows = 3)
 df_GDP_capita = df_GDP_capita.drop(columns= df_GDP_capita.columns[1:34])
 
 
@@ -40,7 +41,7 @@ app.layout = html.Div(
         html.Div(
             children = [
             html.H3('Select scope:'),
-            dcc.Dropdown(id = "scope",
+            dcc.Dropdown(id = "scope1",
                         options=scope,
                         multi=False,
                         value = "Finland",
@@ -72,7 +73,7 @@ app.layout = html.Div(
 
 @app.callback(
     Output('C02_change_emissions_graph', "figure"), 
-    Input("scope", "value"),
+    Input("scope1", "value"),
     [Input('my-range-slider', 'value')],
     )
 
