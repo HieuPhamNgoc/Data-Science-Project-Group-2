@@ -22,33 +22,34 @@ df_percent= pd.DataFrame(data_percent)
 fig = px.pie(df_percent, values="Numbers", names="Data")
 fig.show()
 
+#------
 app = dash.Dash(__name__)
-
-
 app.layout = html.Div([
-    html.H4('Status of Net-Zero Target'),
+    html.H4('Status of net-zero target'),
+    html.P("Select the status of net-zero target :"),
+    dcc.RadioItems(
+        id='status', 
+        options=["In policy1,],
+        value="Total",
+        inline=True
+    ),
     dcc.Graph(id="graph"),
-    html.P("Names:"),
-    dcc.Dropdown(id='names',
-        options=['smoker', 'day', 'time', 'sex'],
-        value='day', clearable=False
-    ),
-    html.P("Values:"),
-    dcc.Dropdown(id='values',
-        options=['total_bill', 'tip', 'size'],
-        value='total_bill', clearable=False
-    ),
 ])
-
-
 @app.callback(
     Output("graph", "figure"), 
-    Input("names", "value"), 
-    Input("values", "value"))
-def generate_chart(names, values):
-    df = px.data.tips() # replace with your own data source
-    fig = px.pie(df, values=values, names=names, hole=.3)
+    Input("status", "value"))
+
+def display_choropleth(status):
+    df_use = df # replace with your own data source
+    fig = px.choropleth(
+        df_use, color=status,locations="code",
+        projection="mercator", range_color=[0, 220],scope="europe", hover_name="Country",color_continuous_scale="Viridis")
+    fig.update_geos(fitbounds="locations", visible=False)
+    fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
     return fig
 
 
-app.run_server(debug=True)
+if __name__ == '__main__':
+    app.run_server(debug=True)
+
+
