@@ -5,10 +5,17 @@ from dash.dependencies import Input, Output
 import plotly.express as px
 import pandas as pd
 import numpy as np
-#Not completed
+import pycountry
+
 #preprocessing the net-zero-target csv 
+ 
 data = pd.read_csv("SelinWork/net-zero-targets.csv")
-in_policy=len(data[data['Status of net-zero target'] == 'In policy document'])
+
+f""" or country in pycountry.countries:
+    if (country.alpha_3  not in data["Code"]):
+      data.loc[len(data.index)] = [country.name, country.alpha_3, 2000,"No Data"]   """
+
+""" in_policy=len(data[data['Status of net-zero target'] == 'In policy document'])
 pledge=len(data[data['Status of net-zero target'] == 'Pledge'])
 achieved=len(data[data['Status of net-zero target'] == 'Achieved'])
 in_law=len(data[data['Status of net-zero target'] == 'In law'])
@@ -20,33 +27,25 @@ variables=['In policy document', 'Pledge', 'Achieved', 'In law',"No data"]
 data_percent={"Data":variables,"Numbers":percentages}
 df_percent= pd.DataFrame(data_percent)
 fig = px.pie(df_percent, values="Numbers", names="Data")
-fig.show()
+fig.show() """
 
 #------
 app = dash.Dash(__name__)
 app.layout = html.Div([
-    html.H4('Status of net-zero target'),
-    html.P("Select the status of net-zero target :"),
-    dcc.RadioItems(
-        id='status', 
-        options=["In policy1,],
-        value="Total",
-        inline=True
-    ),
+    html.H4('Status of Net-zero Target'),
+    
     dcc.Graph(id="graph"),
 ])
-@app.callback(
-    Output("graph", "figure"), 
-    Input("status", "value"))
 
-def display_choropleth(status):
-    df_use = df # replace with your own data source
-    fig = px.choropleth(
-        df_use, color=status,locations="code",
-        projection="mercator", range_color=[0, 220],scope="europe", hover_name="Country",color_continuous_scale="Viridis")
-    fig.update_geos(fitbounds="locations", visible=False)
-    fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
-    return fig
+
+
+
+fig = px.choropleth(
+        data, color="Status of net-zero target",locations="Code",
+        projection="mercator", range_color=[0, 220],scope="world", color_continuous_scale="Viridis")
+fig.update_geos(fitbounds="locations", visible=False)
+fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
+fig.show()
 
 
 if __name__ == '__main__':
