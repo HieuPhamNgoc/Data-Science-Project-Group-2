@@ -53,7 +53,7 @@ app = Dash(__name__)
 
 app.layout = html.Div(
     children = [
-        html.H1('CO2 emissions per sector per capita', style = {'text-align':'center'}),
+        html.H1('CO2 emissions per sector', style = {'text-align':'center'}),
         html.Div(
             children = [
             html.H3('Select scope:'),
@@ -61,7 +61,11 @@ app.layout = html.Div(
                         options=scope,
                         multi=False,
                         value = 'Global emissions',
-                        style={'width':'60%'})
+                        style={'width':'60%'}),
+            html.Br(),
+            dcc.RadioItems(id = 'scale',
+                          options=["Total CO2", "CO2 / capita"],
+                          value="CO2 / capita")
             ],
             style={'width': '50%', 'margin-left': '50px'}
         ),
@@ -73,25 +77,47 @@ app.layout = html.Div(
 
 @app.callback(
     Output("sector_emissions_graph", "figure"), 
-    Input("scope", "value"))
+    Input("scope", "value"),
+    Input("scale", "value"))
 
-def update_graph(selection):
-    if selection == "Global emissions":
-        data = global_sector_per_capita.copy()
-        # we need the data from wide-form to long-form (see internet or plotly docs on why):
-        data = pd.melt(data, id_vars = "Sector", value_vars=data.columns, var_name="Year", value_name = "CO2 emissions [Tonnes/person]", ignore_index=True)
-        fig = px.area(data, x="Year", y="CO2 emissions [Tonnes/person]", color="Sector", template="none")
+def update_graph(select, scale):
+    if scale == "CO2 / capita":
+        if select == "Global emissions":
+            data = global_sector_per_capita.copy()
+            # we need the data from wide-form to long-form (see internet or plotly docs on why):
+            data = pd.melt(data, id_vars = "Sector", value_vars=data.columns, var_name="Year", value_name = "CO2 emissions [Tonnes/person]", ignore_index=True)
+            fig = px.area(data, x="Year", y="CO2 emissions [Tonnes/person]", color="Sector", template="none")
+        else:
+            # dont know why this slightly bugs out. Python thinks selecting row based on column criteria
+            # produces a series when it produces a dataframe. Works when running so no problem
+            data = sector_per_capita.copy()
+            data = data[data["Country"] == select] # select country data
+            data.drop(columns=["Country"], inplace=True)
+            data.columns = data.columns.astype(str) # change names to string to ensure sound processing
+            # we need the data from wide-form to long-form (see internet or plotly docs on why):
+            data = pd.melt(data, id_vars = "Sector", value_vars=data.columns[1:], var_name="Year", value_name = "CO2 emissions [Tonnes/person]", ignore_index=True)
+            fig = px.area(data, x="Year", y="CO2 emissions [Tonnes/person]", color="Sector", template="none")
+        return fig
     else:
-        # dont know why this slightly bugs out. Python thinks selecting row based on column criteria
-        # produces a series when it produces a dataframe. Works when running so no problem
-        data = sector_per_capita.copy()
-        data = data[data["Country"] == selection] # select country data
-        data.drop(columns=["Country"], inplace=True)
-        data.columns = data.columns.astype(str) # change names to string to ensure sound processing
-        # we need the data from wide-form to long-form (see internet or plotly docs on why):
-        data = pd.melt(data, id_vars = "Sector", value_vars=data.columns[1:], var_name="Year", value_name = "CO2 emissions [Tonnes/person]", ignore_index=True)
-        fig = px.area(data, x="Year", y="CO2 emissions [Tonnes/person]", color="Sector", template="none")
-    return fig
+        if select == "Global emissions":
+            data = sector_data.copy()
+            data.drop(columns=["Country", "EDGAR Country Code"], inplace=True) # not needed on global scope
+            data = data.groupby("Sector", as_index=False).sum() # group by sector, aggregate by summing yearly emissions
+            data.columns = data.columns.astype(str)
+            # we need the data from wide-form to long-form (see internet or plotly docs on why):
+            data = pd.melt(data, id_vars = "Sector", value_vars=data.columns, var_name="Year", value_name = "CO2 emissions [Megatonnes]", ignore_index=True)
+            fig = px.area(data, x="Year", y="CO2 emissions [Megatonnes]", color="Sector", template="none")
+        else:
+            # dont know why this slightly bugs out. Python thinks selecting row based on column criteria
+            # produces a series when it produces a dataframe. Works when running so no problem
+            data = sector_data.copy()
+            data = data[data["Country"] == select] # select country data
+            data.drop(columns=["Country", "EDGAR Country Code"], inplace=True)
+            data.columns = data.columns.astype(str) # change names to string to ensure sound processing
+            # we need the data from wide-form to long-form (see internet or plotly docs on why):
+            data = pd.melt(data, id_vars = "Sector", value_vars=data.columns[1:], var_name="Year", value_name = "CO2 emissions [Megatonnes]", ignore_index=True)
+            fig = px.area(data, x="Year", y="CO2 emissions [Megatonnes]", color="Sector", template="none")
+        return fig
 
 if __name__ == '__main__':
     app.run_server(debug=True)
