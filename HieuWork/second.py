@@ -13,9 +13,9 @@ from dash.dependencies import Input, Output
 
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.LUX])
 
-path = 'HieuWork/EDGARv7.0_FT2021_fossil_CO2_booklet_2022.xlsx'
+path = 'HieuWork\CO2_by_capita.xlsx'
 
-df_CO2_country = pd.read_excel(io = path, sheet_name='fossil_CO2_totals_by_country')
+df_CO2_country = pd.read_excel(io = path, sheet_name='fossil_CO2_per_capita_by_countr')
 
 nordic_countries = ['Denmark', 'Finland', 'Iceland', 'Norway', 'Sweden', 'Greenland', 'Faroes']
 
@@ -39,19 +39,21 @@ year = [{'label': str(c), 'value': c} for c  in df_CO2_country.columns[3:]]
 
 app.layout = html.Div(
     children = [
-        html.H1('CO2 emission', style = {'text-align':'center'}),
+        html.H1('CO2 emission per capita', style = {'text-align':'center'}),
 
         html.Div(
             children = [
             html.H3('Choose a region:'),
-            dcc.Dropdown(id = 'region',
-                        options=region,
-                        multi=False,
-                        value = 'World',
-                        style={'width':'40%'})
             ],
-            style={'width': '50%', 'margin-left': '50px'}
+            style={'width': '100%', 'margin-left': '50px'}
         ),
+        dcc.RadioItems(id = 'region',
+                        options=region,
+                        value = 'World',
+                        inline=False, 
+                        style={'margin-left':'50px'},
+                        labelStyle={'display': 'inline-block', 'margin-right':'15px'}, # block for column, inline-block for line
+                        ),
         html.Br(),
         dcc.Graph(id = 'co2_graph', figure = {}, style = {'margin-left':'150px'}),
         html.Br(),
@@ -64,7 +66,7 @@ app.layout = html.Div(
                             marks=None,
                             tooltip={"placement": "bottom", "always_visible": False}, 
                             id = 'year_slider')],
-            style = {'width': '50%', 'margin-left':'480px'}
+            style = {'width': '50%', 'margin-left':'440px'}
         ),
         html.Div(id = 'output_container', children = [], style={'text-align':'center', 'font-size':'25px'})
     ]
@@ -85,7 +87,7 @@ def update_graph(region_slctd,year_slctd): # number of arguments is the same as 
     print(year_slctd)
     print(type(year_slctd))
 
-    container = ' CO2 emission in {}'.format(year_slctd)
+    container = ' CO2 emission per capita in {}'.format(year_slctd)
 
     if (region_slctd == 'World'):
         df_CO2 = df_CO2_country.copy()
@@ -98,19 +100,26 @@ def update_graph(region_slctd,year_slctd): # number of arguments is the same as 
 
     df_CO2 = df_CO2[['Country', year_slctd]]
     df_CO2[year_slctd] = np.round(df_CO2[year_slctd], 3)
-    
+
+    center_dict = {
+        'World': dict(lat=0,lon=0),
+        'Asia': dict(lat=60,lon=150),
+        'Africa': dict(lat=40, lon=80),
+        'Europe': dict(lat=40, lon=80)
+    }
 
     fig = px.choropleth(
         data_frame=df_CO2,
         locationmode='country names',
         locations= 'Country',
         color= year_slctd,
-        range_color=[0, 6000],
+        range_color=[0, 20],
         color_continuous_scale=px.colors.sequential.Aggrnyl,
         hover_data={'Country': False},
-        labels={str(year_slctd): 'CO2 emission'},
-        hover_name='Country'
-        
+        labels={str(year_slctd): 'CO2 emission per capita'},
+        hover_name='Country',
+        basemap_visible=True,
+        # center = center_dict[region_slctd]
     )
     fig.update_layout(margin = {'r':0,'t':0,'l':0,'b':0}) # template in ["plotly", "plotly_white", "plotly_dark", "ggplot2", "seaborn", "simple_white", "none"]
     return container, fig
