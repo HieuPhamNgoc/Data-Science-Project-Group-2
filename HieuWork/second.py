@@ -13,7 +13,7 @@ from dash.dependencies import Input, Output
 
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.LUX])
 
-path = 'HieuWork\CO2_by_capita.xlsx'
+path = 'HieuWork/CO2_by_capita.xlsx'
 
 df_CO2_country = pd.read_excel(io = path, sheet_name='fossil_CO2_per_capita_by_countr')
 
